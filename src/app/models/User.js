@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 import Sequelize, { Model } from 'sequelize';
 
 class User extends Model {
-  static init(sequelize) {
+  static init(connection) {
     super.init(
       {
         name: Sequelize.STRING,
@@ -12,7 +12,7 @@ class User extends Model {
         provider: Sequelize.BOOLEAN,
       },
       {
-        sequelize,
+        sequelize: connection,
       }
     );
 
@@ -22,6 +22,10 @@ class User extends Model {
       }
     });
     return this;
+  }
+
+  static associate(models) {
+    this.belongsTo(models.File, { foreignKey: 'avatar_id' });
   }
 
   checkPassword(password) {
